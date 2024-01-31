@@ -1,3 +1,5 @@
+//const { response } = require("express");
+
 /**
  * Класс CreateTransactionForm управляет формой
  * создания новой транзакции
@@ -8,7 +10,8 @@ class CreateTransactionForm extends AsyncForm {
    * метод renderAccountsList
    * */
   constructor(element) {
-    super(element)
+    super(element);
+    this.renderAccountsList();
   }
 
   /**
@@ -16,7 +19,34 @@ class CreateTransactionForm extends AsyncForm {
    * Обновляет в форме всплывающего окна выпадающий список
    * */
   renderAccountsList() {
+    const user = User.current();
+    if(!user) {
+      return;
+    }
 
+    const expList = this.element.querySelector('[name="account_id"]');
+    
+    const values = Array.from(expList.querySelectorAll('[value]'));
+
+    for (const value of values) {
+      expList.removeChild(value);
+    }
+    
+    Account.list(user, (err, response) => {
+
+      if(!err && response.success) {
+        for (const acc of response.data) {
+
+          const dubl = expList.querySelector(`[value="${acc.id}"]`);
+
+          if (!dubl) {
+            let optHtml = `<option value="${acc.id}">${acc.name}</option>`;
+            expList.insertAdjacentHTML('beforeend', optHtml);
+
+          }
+        }
+      }
+    });
   }
 
   /**
@@ -26,6 +56,22 @@ class CreateTransactionForm extends AsyncForm {
    * в котором находится форма
    * */
   onSubmit(data) {
+    Transaction.create(data, (err, response) => {
+      if(!err && response.success) {
+        const names = this.element.querySelectorAll('[name]');
+          for (const name of names) {
+            name.value = '';
+          }
 
+          if (data.type == 'income') {
+            App.getModal('newIncome').close();
+          } else {
+            App.getModal('newExpense').close();
+          }
+
+          App.update();
+      }
+      
+    });
   }
 }
