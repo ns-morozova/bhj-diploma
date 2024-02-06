@@ -53,15 +53,6 @@ class TransactionsPage {
 
     })
 
-
-
-    // for (const remTran of remTrans) {
-    //   remTran.addEventListener('click', (event) => {
-    //     event.preventDefault();
-    //     this.removeTransaction(event.currentTarget.dataset.id);
-    //   })
-    // }
-
   }
 
   /**
@@ -78,7 +69,7 @@ class TransactionsPage {
       return;
     }
     if (confirm('Вы действительно хотите удалить счёт?')) {
-      Account.remove(this.lastOptions, (err, response) => {
+      Account.remove({id: this.lastOptions.account_id}, (err, response) => {
         if(!err && response.success) {
           this.clear();
           App.updateWidgets();
@@ -88,6 +79,7 @@ class TransactionsPage {
       });
     }
   }
+
 
   /**
    * Удаляет транзакцию (доход или расход). Требует
@@ -103,11 +95,8 @@ class TransactionsPage {
         } else {
           alert('ошибка!');
         }
-        
       });
     }
-    
-
   }
 
   /**
@@ -133,7 +122,6 @@ class TransactionsPage {
         });
       }
     })
-
   }
 
   /**
@@ -145,7 +133,6 @@ class TransactionsPage {
     this.renderTransactions(new Array);
     this.renderTitle('Название счёта');
     this.lastOptions = null;
-
   }
 
   /**

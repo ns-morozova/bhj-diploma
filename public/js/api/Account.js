@@ -17,15 +17,4 @@ class Account extends Entity {
       }
     })
   }
-
-  // static create(data, callback) {
-  //   createRequest({
-  //     url: '/create' + this.URL,
-  //     method: 'PUT',
-  //     data,
-  //     callback: (err, response) => {
-  //       callback(err, response);
-  //     }
-  //   })
-  // }
 }
